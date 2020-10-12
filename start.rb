@@ -1,5 +1,7 @@
-require_relative 'player'
-require_relative 'deck'
-require_relative 'game'
+# frozen_string_literal: true
+
+require_relative 'class/player'
+require_relative 'class/deck'
+require_relative 'class/game'
 
 Game.new
