@@ -23,12 +23,16 @@ class Game
     @dealer = Player.new(name)
   end
  
+  def new_turn
+    @turn += 1 if @turn < MAX_TURNS
+  end
+ 
   def next_turn
     first_draw if @turn.zero?
     
-    dealer_draw unless @turn.zero?
+    dealer_draw if @turn == 2
 
-    @turn += 1
+    new_turn
   end
 
   def first_draw
@@ -44,8 +48,12 @@ class Game
     dealer_draw
     dealer_draw
     
-    @turn += 1
+    new_turn
   end
+    
+  def open_cards
+    @turn = MAX_TURNS
+  end  
 
   def player_draw
     card, value = @deck.next_card
@@ -57,6 +65,7 @@ class Game
 
   def dealer_draw
     return if @dealer.score > MAX_SCORE_DEALER
+    return if @turn == MAX_TURNS
   
     card, value = @deck.next_card
     value += A_CARD_BONUS if card.include?('A') && @dealer.score + value < WIN_SCORE
@@ -71,6 +80,7 @@ class Game
 
   def player_open
     puts "#{@player.name} готов открыть карты."
+    open_cards
   end
 
   def dealer_skip
