@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'card'
+
 class Deck
   attr_reader :list
 
@@ -8,12 +10,10 @@ class Deck
   end
 
   def next_card
-    @list = @list.to_a.shuffle.to_h
-    card = @list.keys[0]
-    value = @list[card]
+    @list = @list.shuffle
+    card = @list.first
     @list.delete(card)
-
-    [card, value]
+    card
   end
 
   def cards_left
@@ -23,32 +23,42 @@ class Deck
   private
 
   def create_deck
-    @list = {}
+    @list = []
 
-    deck_digits
+    # deck_digits
     deck_symbols
   end
 
   def deck_digits
     (2..10).each do |c|
-      @list["#{c}♣"] = c
-      @list["#{c}♦"] = c
-      @list["#{c}♥"] = c
-      @list["#{c}♠"] = c
+      card = Card.new("#{c}♣", c)
+      @list << card
+      card = Card.new("#{c}♦", c)
+      @list << card
+      card = Card.new("#{c}♥", c)
+      @list << card
+      card = Card.new("#{c}♠", c)
+      @list << card
     end
   end
 
   def deck_symbols
-    symbols = { 'A' => 1,
-                'K' => 10,
-                'Q' => 10,
-                'J' => 10 }
+    symbols = {
+      'A' => 1,
+      'K' => 10,
+      'Q' => 10,
+      'J' => 10
+    }
 
     symbols.each do |c, v|
-      @list["#{c}♣"] = v
-      @list["#{c}♦"] = v
-      @list["#{c}♥"] = v
-      @list["#{c}♠"] = v
+      card = Card.new("#{c}♣", v)
+      @list << card
+      card = Card.new("#{c}♣", v)
+      @list << card
+      card = Card.new("#{c}♣", v)
+      @list << card
+      card = Card.new("#{c}♣", v)
+      @list << card
     end
   end
 end

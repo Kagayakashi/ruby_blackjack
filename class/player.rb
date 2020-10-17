@@ -3,17 +3,23 @@
 class Player
   attr_reader :name, :bank, :score, :hand
 
-  I_START_CAPITAL = 100
-
-  def initialize(name)
-    @bank = I_START_CAPITAL
+  def initialize(name, capital)
+    @bank = capital
+    @capital = capital
     @name = name.downcase.capitalize
-    @hand = {}
+    @hand = []
     @score = 0
   end
 
-  def add_card(card, value)
-    @hand[card] = value
+  def add_card(card)
+    # Если текущая карта на выбор туз, то проверить есть ли он уже в колоде и пересчитать значение.
+    if card.ace?
+      ace = @hand.select(&:ace?)
+      card.ace_value(ace.empty?)
+    end
+
+    @score += card.value
+    @hand << card
   end
 
   def increase_bank(sum)
@@ -26,27 +32,16 @@ class Player
   end
 
   def reset_bank
-    @bank = 100
+    @bank = @capital
   end
 
-  attr_writer :score
-
   def drop
-    @hand = {}
+    @hand = []
+    @score = 0
+    @score = 0
   end
 
   def lost?
     @score > 21
-  end
-
-  def puts_cards
-    print "Карты #{@name}: "
-    c = 0
-    @hand.each do |card, _value|
-      c += 1
-      print card.to_s
-      print ', ' if c < @hand.count
-    end
-    puts
   end
 end
