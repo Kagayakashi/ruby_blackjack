@@ -8,8 +8,12 @@ class TInterface
   DEALER_NAME = 'Пётр'
 
   def initialize
-    @game = Game.new
-    welcome
+    puts 'Здравствуйте! Как вас зовут?'
+    @game = Game.new(gets.chomp, DEALER_NAME, 100)
+
+    puts 'Добро пожаловать в БлекДжек!'
+    puts "А я диллер #{@game.dealer.name}. Удачи вам, #{@game.player.name}!"
+
     start_game
   end
 
@@ -33,20 +37,23 @@ class TInterface
     retry
   end
 
-  def bet(bet = 10)
-    bet
-  end
-
   def results
     dealer_hand
     puts "Выиграш #{@game.bank}$"
-    if draw?
-      draw
-    elsif player_won?
-      player_won
-    elsif dealer_won?
-      dealer_won
-    end
+    winner = @game.winner
+    puts "Победил #{winner.name}!" unless winner.nil?
+    winner&.increase_bank(bet)
+    draw if winner.nil?
+  end
+
+  def draw
+    puts 'Ничья!'
+    @game.player.increase_bank(bet)
+    @game.dealer.increase_bank(bet)
+  end
+
+  def bet(bet = 10)
+    bet
   end
 
   def player_hand
@@ -79,43 +86,6 @@ class TInterface
     puts "#{@game.dealer.name} взял карту."
     @game.dealer_draw
     puts "#{@game.dealer.name} взял карту."
-  end
-
-  def player_won?
-    return false if @game.player.lost? || !@game.dealer.lost? && @game.player.score < @game.dealer.score
-
-    # Победа игрока
-    true
-  end
-
-  def dealer_won?
-    return false if @game.dealer.lost? || !@game.player.lost? && @game.dealer.score < @game.player.score
-
-    # Победа дилера
-    true
-  end
-
-  def draw?
-    return false if @game.player.lost? || @game.dealer.lost? || @game.player.score != @game.dealer.score
-
-    # Ничья
-    true
-  end
-
-  def player_won
-    puts 'Вы победили!'
-    @game.player.increase_bank(@game.bank)
-  end
-
-  def dealer_won
-    puts 'Дилер победил!'
-    @game.dealer.increase_bank(@game.bank)
-  end
-
-  def draw
-    puts 'Ничья!'
-    @game.player.increase_bank(bet)
-    @game.dealer.increase_bank(bet)
   end
 
   def wipe?
@@ -152,7 +122,6 @@ class TInterface
     @game.player_draw
     puts "#{@game.player.name} взял карту."
     dealer_draw
-
     player_hand
   end
 
@@ -163,13 +132,5 @@ class TInterface
 
   def player_open
     puts "#{@game.player.name} открыл карты!"
-  end
-
-  def welcome
-    puts 'Здравствуйте! Как вас зовут?'
-    @game.create_player(gets.chomp, 100)
-    @game.create_dealer('Пётр', 100)
-    puts 'Добро пожаловать в БлекДжек!'
-    puts "А я диллер #{@game.dealer.name}. Удачи вам, #{@game.player.name}!"
   end
 end

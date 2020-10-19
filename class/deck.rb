@@ -3,6 +3,11 @@
 require_relative 'card'
 
 class Deck
+  C_SUITS = ['♣', '♦', '♥', '♠'].freeze
+  C_NUMBERS = (2..10).freeze
+  C_SYMBOLS = %w[A K Q J].freeze
+  C_SYMBOL_VALUE = 10
+
   attr_reader :list
 
   def initialize
@@ -25,40 +30,25 @@ class Deck
   def create_deck
     @list = []
 
-    # deck_digits
+    deck_numbers
     deck_symbols
   end
 
-  def deck_digits
-    (2..10).each do |c|
-      card = Card.new("#{c}♣", c)
-      @list << card
-      card = Card.new("#{c}♦", c)
-      @list << card
-      card = Card.new("#{c}♥", c)
-      @list << card
-      card = Card.new("#{c}♠", c)
-      @list << card
+  def deck_numbers
+    C_SUITS.each do |suit|
+      C_NUMBERS.each do |value|
+        card = Card.new("#{value}#{suit}", value)
+        @list << card
+      end
     end
   end
 
   def deck_symbols
-    symbols = {
-      'A' => 1,
-      'K' => 10,
-      'Q' => 10,
-      'J' => 10
-    }
-
-    symbols.each do |c, v|
-      card = Card.new("#{c}♣", v)
-      @list << card
-      card = Card.new("#{c}♣", v)
-      @list << card
-      card = Card.new("#{c}♣", v)
-      @list << card
-      card = Card.new("#{c}♣", v)
-      @list << card
+    C_SUITS.each do |suit|
+      C_SYMBOLS.each do |symbol|
+        card = Card.new("#{symbol}#{suit}", C_SYMBOL_VALUE)
+        @list << card
+      end
     end
   end
 end

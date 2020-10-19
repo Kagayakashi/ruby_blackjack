@@ -6,6 +6,11 @@ require_relative 'deck'
 class Game
   attr_reader :dealer, :player, :bank
 
+  def initialize(player, dealer, capital)
+    @player = Player.new(player, capital)
+    @dealer = Player.new(dealer, capital)
+  end
+
   def increase_bank(bet)
     @bank += bet
   end
@@ -36,11 +41,30 @@ class Game
     @dealer.reset_bank
   end
 
-  def create_player(name, capital)
-    @player = Player.new(name, capital)
+  def winner
+    return nil if draw?
+    return @player if player_won?
+    return @dealer if dealer_won?
   end
 
-  def create_dealer(name, capital)
-    @dealer = Player.new(name, capital)
+  def player_won?
+    return false if @player.lost? || !@dealer.lost? && @player.score < @dealer.score
+
+    # Победа игрока
+    true
+  end
+
+  def dealer_won?
+    return false if @dealer.lost? || !@player.lost? && @dealer.score < @player.score
+
+    # Победа дилера
+    true
+  end
+
+  def draw?
+    return false if @player.lost? || @dealer.lost? || @player.score != @dealer.score
+
+    # Ничья
+    true
   end
 end

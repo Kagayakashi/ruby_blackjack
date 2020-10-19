@@ -12,6 +12,6 @@ class Card
   end
 
   def ace_value(first)
-    @value += 10 unless first
+    @value = 1 if first
   end
 end
